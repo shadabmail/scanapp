@@ -4,8 +4,6 @@ import '../utils/responsive.dart';
 import '../widgets/app_header.dart';
 import 'login_screen.dart';
 import 'scanner_screen.dart';
-import 'add_asset_screen.dart';
-import 'view_list_screen.dart';
 
 const kBackgroundGradient = RadialGradient(
   colors: [
@@ -66,33 +64,20 @@ class DashboardScreen extends StatelessWidget {
                       maxWidth: Responsive.wp(context, 90),
                       maxHeight: Responsive.hp(context, 70),
                     ),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: Responsive.wp(context, 5),
-                      runSpacing: Responsive.hp(context, 2),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: Responsive.hp(context, 2),
+                      crossAxisSpacing: Responsive.wp(context, 5),
+                      padding: EdgeInsets.all(Responsive.wp(context, 5)),
+                      childAspectRatio: 1,
                       children: [
-                        SizedBox(
-                          width: Responsive.wp(context, 40),
-                          height: Responsive.wp(context, 40),
-                          child: _Card(title: "Scan", icon: Icons.qr_code_scanner, onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const ScannerScreen()));
-                          }),
-                        ),
-                        SizedBox(
-                          width: Responsive.wp(context, 40),
-                          height: Responsive.wp(context, 40),
-                          child: _Card(title: "Add Asset", icon: Icons.add_box, onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const AddAssetScreen()));
-                          }),
-                        ),
-                        SizedBox(
-                          width: Responsive.wp(context, 40),
-                          height: Responsive.wp(context, 40),
-                          child: _Card(title: "Asset List", icon: Icons.checklist, onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const ViewListScreen()));
-                          }),
-                        ),
-                        // const _Card(title: "Document", icon: Icons.description),
+                        _Card(title: "Scan", icon: Icons.qr_code_scanner, onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const ScannerScreen()));
+                        }),
+                        const _Card(title: "Add Asset", icon: Icons.add_box),
+                        const _Card(title: "Asset List", icon: Icons.checklist),
+                        const _Card(title: "Document", icon: Icons.description),
                       ],
                     ),
                   ),

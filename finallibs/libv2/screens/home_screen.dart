@@ -14,13 +14,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
 
+  final pages = const [
+    DashboardScreen(),
+    ScannerScreen(),
+    ViewListScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      const DashboardScreen(),
-      ScannerScreen(onCancel: () => setState(() => index = 0)),
-      const ViewListScreen(),
-    ];
     return Scaffold(
       body: pages[index],
       bottomNavigationBar: Container(
