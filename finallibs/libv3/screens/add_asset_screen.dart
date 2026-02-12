@@ -31,7 +31,6 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
   String? selectedImagePath;
   String? selectedImageName;
   bool imageValidationError = false;
-  String assetType = 'Direct';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -64,103 +63,63 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                           ),
                           child: Column(
                             children: [
-                              Row(
-                                children: [
-                                  Text('Asset Type: ', style: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w500)),
-                                  Radio<String>(
-                                    value: 'Direct',
-                                    groupValue: assetType,
-                                    activeColor: const Color(0xFF5ED6E5),
-                                    onChanged: (val) => setState(() => assetType = val!),
-                                  ),
-                                  Text('Direct', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14))),
-                                  SizedBox(width: Responsive.wp(context, 5)),
-                                  Radio<String>(
-                                    value: 'InDirect',
-                                    groupValue: assetType,
-                                    activeColor: const Color(0xFF5ED6E5),
-                                    onChanged: (val) => setState(() => assetType = val!),
-                                  ),
-                                  Text('InDirect', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14))),
-                                ],
-                              ),
-                              SizedBox(height: Responsive.hp(context, 1.5)),
-                              TextFormField(
-                                controller: qrIdController,
-                                onChanged: (value) {
-                                  if (_formKey.currentState != null) {
-                                    _formKey.currentState!.validate();
-                                  }
-                                },
-                                style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
-                                decoration: InputDecoration(
-                                  labelText: 'QR ID *',
-                                  labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
-                                  prefixIcon: const Icon(Icons.qr_code, color: Color(0xFF5ED6E5)),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.08),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.white24),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'QR ID is required';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: Responsive.hp(context, 1.5)),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF5ED6E5),
-                                    padding: EdgeInsets.symmetric(vertical: Responsive.hp(context, 1.8)),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    elevation: 5,
-                                  ),
-                                  onPressed: () {
-                                    if (qrIdController.text.isNotEmpty) {
-                                      setState(() => showQR = true);
-                                    }
-                                  },
-                                  icon: const Icon(Icons.qr_code_2, color: Colors.white),
-                                  label: Text('Generate QR Code', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w600)),
-                                ),
-                              ),
-                              if (showQR && qrIdController.text.isNotEmpty)
-                                SizedBox(height: Responsive.hp(context, 1.5)),
-                              if (showQR && qrIdController.text.isNotEmpty)
-                                Container(
-                                  padding: EdgeInsets.all(Responsive.wp(context, 4)),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                    boxShadow: const [
-                                      BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 3))
-                                    ],
-                                  ),
-                                  child: QrImageView(
-                                    data: qrIdController.text,
-                                    version: QrVersions.auto,
-                                    size: Responsive.wp(context, 40),
-                                  ),
-                                ),
-                              SizedBox(height: Responsive.hp(context, 1.5)),
+                              // TextFormField(
+                              //   controller: qrIdController,
+                              //   style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
+                              //   decoration: InputDecoration(
+                              //     labelText: 'QR ID *',
+                              //     labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
+                              //     prefixIcon: const Icon(Icons.qr_code, color: Color(0xFF5ED6E5)),
+                              //     filled: true,
+                              //     fillColor: Colors.white.withOpacity(0.08),
+                              //     enabledBorder: OutlineInputBorder(
+                              //       borderRadius: BorderRadius.circular(12),
+                              //       borderSide: const BorderSide(color: Colors.white24),
+                              //     ),
+                              //     focusedBorder: OutlineInputBorder(
+                              //       borderRadius: BorderRadius.circular(12),
+                              //       borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(height: Responsive.hp(context, 1.5)),
+                              // SizedBox(
+                              //   width: double.infinity,
+                              //   child: ElevatedButton.icon(
+                              //     style: ElevatedButton.styleFrom(
+                              //       backgroundColor: const Color(0xFF5ED6E5),
+                              //       padding: EdgeInsets.symmetric(vertical: Responsive.hp(context, 1.8)),
+                              //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              //       elevation: 5,
+                              //     ),
+                              //     onPressed: () {
+                              //       if (qrIdController.text.isNotEmpty) {
+                              //         setState(() => showQR = true);
+                              //       }
+                              //     },
+                              //     icon: const Icon(Icons.qr_code_2, color: Colors.white),
+                              //     label: Text('Generate QR Code', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w600)),
+                              //   ),
+                              // ),
+                              // if (showQR && qrIdController.text.isNotEmpty)
+                              //   SizedBox(height: Responsive.hp(context, 1.5)),
+                              // if (showQR && qrIdController.text.isNotEmpty)
+                              //   Container(
+                              //     padding: EdgeInsets.all(Responsive.wp(context, 4)),
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.white,
+                              //       borderRadius: BorderRadius.circular(12),
+                              //       boxShadow: const [
+                              //         BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 3))
+                              //       ],
+                              //     ),
+                              //     child: QrImageView(
+                              //       data: qrIdController.text,
+                              //       version: QrVersions.auto,
+                              //       size: Responsive.wp(context, 40),
+                              //     ),
+                              //   ),
+                              // SizedBox(height: Responsive.hp(context, 1.5)),
                               TextFormField(
                                 controller: assetNameController,
                                 onChanged: (value) {
@@ -192,12 +151,7 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                     borderSide: const BorderSide(color: Colors.red, width: 2),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Asset Name is required';
-                                  }
-                                  return null;
-                                },
+                                validator: (value) => null,
                               ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
                               GestureDetector(
@@ -245,32 +199,46 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                   ),
                                 ),
                               ),
-                              // SizedBox(height: Responsive.hp(context, 1.5)),
-                              // DropdownButtonFormField<String>(
-                              //   value: selectedCategory,
-                              //   dropdownColor: const Color(0xFF0B1F2B),
-                              //   style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
-                              //   decoration: InputDecoration(
-                              //     labelText: 'Category *',
-                              //     labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
-                              //     prefixIcon: const Icon(Icons.category, color: Color(0xFF5ED6E5)),
-                              //     filled: true,
-                              //     fillColor: Colors.white.withOpacity(0.08),
-                              //     enabledBorder: OutlineInputBorder(
-                              //       borderRadius: BorderRadius.circular(12),
-                              //       borderSide: const BorderSide(color: Colors.white24),
-                              //     ),
-                              //     focusedBorder: OutlineInputBorder(
-                              //       borderRadius: BorderRadius.circular(12),
-                              //       borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
-                              //     ),
-                              //   ),
-                              //   items: categories.map((cat) => DropdownMenuItem(
-                              //     value: cat,
-                              //     child: Text(cat),
-                              //   )).toList(),
-                              //   onChanged: (val) => setState(() => selectedCategory = val),
-                              // ),
+                              SizedBox(height: Responsive.hp(context, 1.5)),
+                              DropdownButtonFormField<String>(
+                                value: selectedCategory,
+                                dropdownColor: const Color(0xFF0B1F2B),
+                                style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
+                                decoration: InputDecoration(
+                                  labelText: 'Category *',
+                                  labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
+                                  prefixIcon: const Icon(Icons.category, color: Color(0xFF5ED6E5)),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(0.08),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(color: Colors.white24),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(color: Colors.red),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(color: Colors.red, width: 2),
+                                  ),
+                                ),
+                                items: categories.map((cat) => DropdownMenuItem(
+                                  value: cat,
+                                  child: Text(cat),
+                                )).toList(),
+                                onChanged: (val) {
+                                  setState(() => selectedCategory = val);
+                                  if (_formKey.currentState != null) {
+                                    _formKey.currentState!.validate();
+                                  }
+                                },
+                                validator: (value) => null,
+                              ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
                               TextField(
                                 controller: summaryController,
@@ -306,7 +274,7 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                     elevation: 8,
                                   ),
                                   onPressed: () {
-                                    if (_formKey.currentState!.validate() && selectedImagePath != null) {
+                                    if (selectedImagePath != null) {
                                       showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
@@ -324,8 +292,6 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                                   selectedCategory = null;
                                                   showQR = false;
                                                   imageValidationError = false;
-                                                  assetType = 'Direct';
-                                                  qrIdController.clear();
                                                   assetNameController.clear();
                                                   summaryController.clear();
                                                 });
