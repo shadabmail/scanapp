@@ -86,7 +86,11 @@ class DashboardScreen extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const ViewListScreen()));
                           }),
                         ),
-                        // const _Card(title: "Document", icon: Icons.description),
+                        SizedBox(
+                          width: Responsive.wp(context, 40),
+                          height: Responsive.wp(context, 40),
+                          child: _Card(title: "Document", icon: Icons.description, onTap: () {}),
+                        ),
                       ],
                     ),
                   ),
