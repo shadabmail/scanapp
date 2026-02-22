@@ -1,20 +1,14 @@
 
 import 'package:flutter/material.dart';
+import '../config/app_strings.dart';
 import '../utils/responsive.dart';
+import '../utils/app_theme.dart';
+import '../utils/container_decoration.dart';
 import '../widgets/app_header.dart';
 import 'login_screen.dart';
 import 'scanner_screen.dart';
 import 'add_asset_screen.dart';
 import 'view_list_screen.dart';
-
-const kBackgroundGradient = RadialGradient(
-  colors: [
-    Color(0xFF163A4D),
-    Color(0xFF0B1F2B),
-  ],
-  radius: 1.2,
-  center: Alignment(0, -0.3),
-);
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -23,7 +17,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-        backgroundColor: const Color(0xFF0B1F2B),
+        backgroundColor: AppColors.darkBackground1,
         child: SafeArea(
           child: Column(
             children: [
@@ -39,8 +33,8 @@ class DashboardScreen extends StatelessWidget {
               ),
               SizedBox(height: Responsive.hp(context, 4)),
               ListTile(
-                leading: const Icon(Icons.logout, color: Colors.white),
-                title: Text('Logout', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 16))),
+                leading: const Icon(Icons.logout, color: AppColors.white),
+                title: Text(AppStrings.logout, style: TextStyle(color: AppColors.white, fontSize: Responsive.sp(context, 16))),
                 onTap: () {
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -54,11 +48,11 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: kBackgroundGradient),
+        decoration: const BoxDecoration(gradient: AppGradients.background),
         child: SafeArea(
           child: Column(
             children: [
-              const AppHeader(title: "Dashboard", showMenuButton: true),
+              const AppHeader(title: AppStrings.dashboard, showMenuButton: true),
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
@@ -74,21 +68,21 @@ class DashboardScreen extends StatelessWidget {
                         SizedBox(
                           width: Responsive.wp(context, 40),
                           height: Responsive.wp(context, 40),
-                          child: _Card(title: "Scan", icon: Icons.qr_code_scanner, onTap: () {
+                          child: _Card(title: AppStrings.scan, icon: Icons.qr_code_scanner, onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const ScannerScreen()));
                           }),
                         ),
                         SizedBox(
                           width: Responsive.wp(context, 40),
                           height: Responsive.wp(context, 40),
-                          child: _Card(title: "Add Asset", icon: Icons.add_box, onTap: () {
+                          child: _Card(title: AppStrings.addAsset, icon: Icons.add_box, onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const AddAssetScreen()));
                           }),
                         ),
                         SizedBox(
                           width: Responsive.wp(context, 40),
                           height: Responsive.wp(context, 40),
-                          child: _Card(title: "Asset List", icon: Icons.checklist, onTap: () {
+                          child: _Card(title: AppStrings.assets, icon: Icons.checklist, onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const ViewListScreen()));
                           }),
                         ),
@@ -120,19 +114,13 @@ class _Card extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF132F40),
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: const [
-            BoxShadow(color: Colors.black54, blurRadius: 10)
-          ],
-        ),
+        decoration: AppContainerDecoration.dashboardCard(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
               radius: avatarRadius,
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.white,
               child: Icon(icon, size: iconSize, color: Colors.black),
             ),
             SizedBox(height: Responsive.hp(context, 2)),
@@ -141,7 +129,7 @@ class _Card extends StatelessWidget {
               child: Text(title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white, fontSize: Responsive.sp(context, 14))),
+                      color: AppColors.white, fontSize: Responsive.sp(context, 14))),
             ),
           ],
         ),

@@ -1,17 +1,10 @@
 
 import 'package:flutter/material.dart';
+import '../config/app_strings.dart';
 import 'asset_detail_screen.dart';
 import '../utils/responsive.dart';
+import '../utils/app_theme.dart';
 import '../widgets/app_header.dart';
-
-const kBackgroundGradient = RadialGradient(
-  colors: [
-    Color(0xFF163A4D),
-    Color(0xFF0B1F2B),
-  ],
-  radius: 1.2,
-  center: Alignment(0, -0.3),
-);
 
 class ViewListScreen extends StatelessWidget {
   const ViewListScreen({super.key});
@@ -22,11 +15,11 @@ class ViewListScreen extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: kBackgroundGradient),
+        decoration: BoxDecoration(gradient: AppGradients.background),
         child: SafeArea(
           child: Column(
             children: [
-              const AppHeader(title: "Assets", showBackButton: true),
+              const AppHeader(title: AppStrings.assets, showBackButton: true),
               Expanded(
                 child: ListView.builder(
                   padding: EdgeInsets.all(Responsive.wp(context, 5)),
@@ -35,7 +28,7 @@ class ViewListScreen extends StatelessWidget {
                     return Container(
                       margin: EdgeInsets.only(bottom: Responsive.hp(context, 2)),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF132F40),
+                        color: AppColors.darkBackground2,
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: const [
                           BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 2))
@@ -47,19 +40,19 @@ class ViewListScreen extends StatelessWidget {
                           vertical: Responsive.hp(context, 1),
                         ),
                         leading: CircleAvatar(
-                          backgroundColor: const Color(0xFF5ED6E5),
-                          child: Icon(Icons.inventory_2, color: Colors.white, size: Responsive.wp(context, 6)),
+                          backgroundColor: AppColors.primaryAccent,
+                          child: Icon(Icons.inventory_2, color: AppColors.white, size: Responsive.wp(context, 6)),
                         ),
                         title: Text(
                           items[index],
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.white,
                             fontSize: Responsive.sp(context, 15),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         subtitle: Text(
-                          'Tap to view details',
+                          AppStrings.tapToViewDetails,
                           style: TextStyle(
                             color: Colors.white54,
                             fontSize: Responsive.sp(context, 12),
@@ -67,7 +60,7 @@ class ViewListScreen extends StatelessWidget {
                         ),
                         trailing: Icon(
                           Icons.arrow_forward_ios,
-                          color: const Color(0xFF5ED6E5),
+                          color: AppColors.primaryAccent,
                           size: Responsive.wp(context, 4),
                         ),
                         onTap: () {

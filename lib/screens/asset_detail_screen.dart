@@ -1,16 +1,8 @@
 
 import 'package:flutter/material.dart';
 import '../utils/responsive.dart';
+import '../utils/app_theme.dart';
 import '../widgets/app_header.dart';
-
-const kBackgroundGradient = RadialGradient(
-  colors: [
-    Color(0xFF163A4D),
-    Color(0xFF0B1F2B),
-  ],
-  radius: 1.2,
-  center: Alignment(0, -0.3),
-);
 
 class AssetDetailScreen extends StatelessWidget {
   const AssetDetailScreen({super.key});
@@ -19,7 +11,7 @@ class AssetDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: kBackgroundGradient),
+        decoration: const BoxDecoration(gradient: AppGradients.background),
         child: SafeArea(
           child: Column(
             children: [
@@ -52,7 +44,7 @@ class AssetDetailScreen extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.all(Responsive.wp(context, 4)),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF132F40).withOpacity(0.6),
+                    color: AppColors.darkBackground2.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -61,7 +53,7 @@ class AssetDetailScreen extends StatelessWidget {
                       Text(
                         "Summary",
                         style: TextStyle(
-                          color: const Color(0xFF5ED6E5),
+                          color: AppColors.primaryAccent,
                           fontSize: Responsive.sp(context, 14),
                           fontWeight: FontWeight.w600,
                         ),

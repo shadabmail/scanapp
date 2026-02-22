@@ -1,19 +1,17 @@
 
 import 'package:flutter/material.dart';
+import '../config/app_config.dart';
+import '../config/app_strings.dart';
 import '../utils/responsive.dart';
+import '../utils/app_theme.dart';
+import '../utils/button_styles.dart';
+import '../utils/container_decoration.dart';
 import '../widgets/app_header.dart';
+import '../widgets/app_text_field.dart';
+import '../widgets/app_image_picker.dart';
+import '../widgets/app_radio_group.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-
-const kBackgroundGradient = RadialGradient(
-  colors: [
-    Color(0xFF163A4D),
-    Color(0xFF0B1F2B),
-  ],
-  radius: 1.2,
-  center: Alignment(0, -0.3),
-);
-
+ 
 class AddAssetScreen extends StatefulWidget {
   const AddAssetScreen({super.key});
 
@@ -31,18 +29,19 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
   String? selectedImagePath;
   String? selectedImageName;
   bool imageValidationError = false;
-  String assetType = 'Direct';
+  String assetType = AppStrings.direct;
   final _formKey = GlobalKey<FormState>();
+  AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: kBackgroundGradient),
+        decoration: const BoxDecoration(gradient: AppGradients.background),
         child: SafeArea(
           child: Column(
             children: [
-              const AppHeader(title: "Add Asset", showBackButton: true),
+              const AppHeader(title: AppStrings.addAsset, showBackButton: true),
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
@@ -52,73 +51,28 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                       ),
                       child: Form(
                         key: _formKey,
+                        autovalidateMode: _autovalidateMode,
                         child: Container(
                           margin: EdgeInsets.all(Responsive.wp(context, 3)),
                           padding: EdgeInsets.all(Responsive.wp(context, 4)),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF132F40).withOpacity(0.6),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black26, blurRadius: 15, offset: Offset(0, 5))
-                            ],
-                          ),
+                          decoration: AppContainerDecoration.card(),
                           child: Column(
                             children: [
-                              Row(
-                                children: [
-                                  Text('Asset Type: ', style: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w500)),
-                                  Radio<String>(
-                                    value: 'Direct',
-                                    groupValue: assetType,
-                                    activeColor: const Color(0xFF5ED6E5),
-                                    onChanged: (val) => setState(() => assetType = val!),
-                                  ),
-                                  Text('Direct', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14))),
-                                  SizedBox(width: Responsive.wp(context, 5)),
-                                  Radio<String>(
-                                    value: 'InDirect',
-                                    groupValue: assetType,
-                                    activeColor: const Color(0xFF5ED6E5),
-                                    onChanged: (val) => setState(() => assetType = val!),
-                                  ),
-                                  Text('InDirect', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14))),
-                                ],
+                              AppRadioGroup(
+                                label: AppStrings.assetType,
+                                value: assetType,
+                                options: const [AppStrings.direct, AppStrings.indirect],
+                                onChanged: (val) => setState(() => assetType = val),
                               ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
-                              TextFormField(
+                              AppTextField(
                                 controller: qrIdController,
-                                onChanged: (value) {
-                                  if (_formKey.currentState != null) {
-                                    _formKey.currentState!.validate();
-                                  }
-                                },
-                                style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
-                                decoration: InputDecoration(
-                                  labelText: 'QR ID *',
-                                  labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
-                                  prefixIcon: const Icon(Icons.qr_code, color: Color(0xFF5ED6E5)),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.08),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.white24),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                ),
+                                label: AppStrings.qrId,
+                                icon: Icons.qr_code,
+                                isRequired: true,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'QR ID is required';
+                                    return AppStrings.qrIdRequired;
                                   }
                                   return null;
                                 },
@@ -127,11 +81,10 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF5ED6E5),
-                                    padding: EdgeInsets.symmetric(vertical: Responsive.hp(context, 1.8)),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                    elevation: 5,
+                                  style: AppButtonStyles.primary(borderRadius: 12).copyWith(
+                                    padding: MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(vertical: Responsive.hp(context, 1.8)),
+                                    ),
                                   ),
                                   onPressed: () {
                                     if (qrIdController.text.isNotEmpty) {
@@ -139,7 +92,7 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.qr_code_2, color: Colors.white),
-                                  label: Text('Generate QR Code', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w600)),
+                                  label: Text(AppStrings.generateQR, style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14), fontWeight: FontWeight.w600)),
                                 ),
                               ),
                               if (showQR && qrIdController.text.isNotEmpty)
@@ -149,7 +102,7 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                   padding: EdgeInsets.all(Responsive.wp(context, 4)),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(AppConfig.borderRadiusMedium),
                                     boxShadow: const [
                                       BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 3))
                                     ],
@@ -161,89 +114,29 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                   ),
                                 ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
-                              TextFormField(
+                              AppTextField(
                                 controller: assetNameController,
-                                onChanged: (value) {
-                                  if (_formKey.currentState != null) {
-                                    _formKey.currentState!.validate();
-                                  }
-                                },
-                                style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
-                                decoration: InputDecoration(
-                                  labelText: 'Asset Name *',
-                                  labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
-                                  prefixIcon: const Icon(Icons.label, color: Color(0xFF5ED6E5)),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.08),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.white24),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                ),
+                                label: AppStrings.assetName,
+                                icon: Icons.label,
+                                isRequired: true,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Asset Name is required';
+                                    return AppStrings.assetNameRequired;
                                   }
                                   return null;
                                 },
                               ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
-                              GestureDetector(
-                                onTap: () async {
-                                  final ImagePicker picker = ImagePicker();
-                                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                                  if (image != null) {
-                                    setState(() {
-                                      selectedImagePath = image.path;
-                                      selectedImageName = image.name;
-                                      imageValidationError = false;
-                                    });
-                                  }
+                              AppImagePicker(
+                                selectedImageName: selectedImageName,
+                                hasError: imageValidationError,
+                                onImageSelected: (path, name) {
+                                  setState(() {
+                                    selectedImagePath = path;
+                                    selectedImageName = name;
+                                    imageValidationError = false;
+                                  });
                                 },
-                                child: Container(
-                                  height: Responsive.hp(context, 15),
-                                  padding: EdgeInsets.all(Responsive.wp(context, 3)),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: imageValidationError ? Colors.red : const Color(0xFF5ED6E5).withOpacity(0.3),
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.add_photo_alternate, color: const Color(0xFF5ED6E5), size: Responsive.wp(context, 10)),
-                                        SizedBox(height: Responsive.hp(context, 0.5)),
-                                        Text(
-                                          selectedImageName ?? 'Add Image *',
-                                          style: TextStyle(
-                                            color: const Color(0xFF5ED6E5),
-                                            fontSize: Responsive.sp(context, 13),
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
                               ),
                               // SizedBox(height: Responsive.hp(context, 1.5)),
                               // DropdownButtonFormField<String>(
@@ -272,47 +165,26 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                               //   onChanged: (val) => setState(() => selectedCategory = val),
                               // ),
                               SizedBox(height: Responsive.hp(context, 1.5)),
-                              TextField(
+                              AppTextField(
                                 controller: summaryController,
+                                label: AppStrings.summary,
+                                icon: Icons.description,
                                 maxLines: 4,
-                                style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 14)),
-                                decoration: InputDecoration(
-                                  labelText: 'Summary',
-                                  labelStyle: TextStyle(color: const Color(0xFF5ED6E5), fontSize: Responsive.sp(context, 14)),
-                                  prefixIcon: const Padding(
-                                    padding: EdgeInsets.only(bottom: 60),
-                                    child: Icon(Icons.description, color: Color(0xFF5ED6E5)),
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.white.withOpacity(0.08),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Colors.white24),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: const BorderSide(color: Color(0xFF5ED6E5), width: 2),
-                                  ),
-                                ),
                               ),
                               SizedBox(height: Responsive.hp(context, 2.5)),
                               SizedBox(
                                 width: double.infinity,
                                 height: Responsive.hp(context, 6.5),
                                 child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF5ED6E5),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                                    elevation: 8,
-                                  ),
+                                  style: AppButtonStyles.primary(),
                                   onPressed: () {
                                     if (_formKey.currentState!.validate() && selectedImagePath != null) {
                                       showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
-                                          backgroundColor: const Color(0xFF132F40),
-                                          title: const Text('Success', style: TextStyle(color: Colors.white)),
-                                          content: const Text('Asset added successfully!', style: TextStyle(color: Colors.white)),
+                                          backgroundColor: AppColors.darkBackground2,
+                                          title: const Text(AppStrings.success, style: TextStyle(color: Colors.white)),
+                                          content: const Text(AppStrings.assetAddedSuccess, style: TextStyle(color: Colors.white)),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
@@ -324,25 +196,30 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                                   selectedCategory = null;
                                                   showQR = false;
                                                   imageValidationError = false;
-                                                  assetType = 'Direct';
+                                                  assetType = AppStrings.direct;
                                                   qrIdController.clear();
                                                   assetNameController.clear();
                                                   summaryController.clear();
                                                 });
                                               },
-                                              child: const Text('OK', style: TextStyle(color: Color(0xFF5ED6E5))),
+                                              child: Text('OK', style: TextStyle(color: AppColors.primaryAccent)),
                                             ),
                                           ],
                                         ),
                                       );
-                                    } else if (selectedImagePath == null) {
-                                      setState(() => imageValidationError = true);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Please select an image')),
-                                      );
+                                    } else {
+                                      setState(() {
+                                        _autovalidateMode = AutovalidateMode.onUserInteraction;
+                                        if (selectedImagePath == null) imageValidationError = true;
+                                      });
+                                      if (selectedImagePath == null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text(AppStrings.selectImage)),
+                                        );
+                                      }
                                     }
                                   },
-                                  child: Text('Submit', style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600)),
+                                  child: Text(AppStrings.submitButton, style: TextStyle(color: Colors.white, fontSize: Responsive.sp(context, 16), fontWeight: FontWeight.w600)),
                                 ),
                               ),
                             ],
