@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../config/app_config.dart';
@@ -8,6 +7,7 @@ import '../utils/app_theme.dart';
 import '../utils/button_styles.dart';
 import '../widgets/app_header.dart';
 import '../widgets/loading_screen.dart';
+import '../database/database_helper.dart';
 import 'asset_detail_screen.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -150,10 +150,17 @@ class _ScannerScreenState extends State<ScannerScreen> with SingleTickerProvider
                                 await Future.delayed(AppConfig.scanLoadingDuration);
                                 setState(() => isScanning = false);
                                 if (mounted) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => const AssetDetailScreen()),
-                                  );
+                                  final assets = await DatabaseHelper.instance.getAllAssets();
+                                  if (assets.isNotEmpty) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => AssetDetailScreen(asset: assets.first)),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('No assets found')),
+                                    );
+                                  }
                                 }
                               },
                               icon: const Icon(Icons.qr_code_scanner, color: AppColors.white, size: 20),

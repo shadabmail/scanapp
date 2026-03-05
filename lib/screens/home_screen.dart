@@ -19,12 +19,16 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
   DateTime? lastBackPress;
 
+  void _refreshList() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = [
       const DashboardScreen(),
       ScannerScreen(onCancel: () => setState(() => index = 0)),
-      const ViewListScreen(),
+      ViewListScreen(key: ValueKey(DateTime.now().millisecondsSinceEpoch)),
     ];
     return PopScope(
       canPop: false,

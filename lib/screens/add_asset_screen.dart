@@ -1,5 +1,7 @@
-
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 import '../config/app_config.dart';
 import '../config/app_strings.dart';
 import '../utils/responsive.dart';
@@ -11,6 +13,8 @@ import '../widgets/app_text_field.dart';
 import '../widgets/app_image_picker.dart';
 import '../widgets/app_radio_group.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../database/database_helper.dart';
+import '../models/asset_model.dart';
  
 class AddAssetScreen extends StatefulWidget {
   const AddAssetScreen({super.key});
@@ -177,36 +181,61 @@ class _AddAssetScreenState extends State<AddAssetScreen> {
                                 height: Responsive.hp(context, 6.5),
                                 child: ElevatedButton(
                                   style: AppButtonStyles.primary(),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (_formKey.currentState!.validate() && selectedImagePath != null) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          backgroundColor: AppColors.darkBackground2,
-                                          title: const Text(AppStrings.success, style: TextStyle(color: Colors.white)),
-                                          content: const Text(AppStrings.assetAddedSuccess, style: TextStyle(color: Colors.white)),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                _formKey.currentState!.reset();
-                                                setState(() {
-                                                  selectedImagePath = null;
-                                                  selectedImageName = null;
-                                                  selectedCategory = null;
-                                                  showQR = false;
-                                                  imageValidationError = false;
-                                                  assetType = AppStrings.direct;
-                                                  qrIdController.clear();
-                                                  assetNameController.clear();
-                                                  summaryController.clear();
-                                                });
-                                              },
-                                              child: Text('OK', style: TextStyle(color: AppColors.primaryAccent)),
+                                      try {
+                                        final appDir = await getApplicationDocumentsDirectory();
+                                        final fileName = '${DateTime.now().millisecondsSinceEpoch}${path.extension(selectedImagePath!)}';
+                                        final savedImage = File('${appDir.path}/$fileName');
+                                        await File(selectedImagePath!).copy(savedImage.path);
+
+                                        final asset = Asset(
+                                          qrId: qrIdController.text,
+                                          name: assetNameController.text,
+                                          type: assetType,
+                                          summary: summaryController.text.isEmpty ? null : summaryController.text,
+                                          imagePath: savedImage.path,
+                                        );
+
+                                        await DatabaseHelper.instance.insertAsset(asset);
+
+                                        if (context.mounted) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              backgroundColor: AppColors.darkBackground2,
+                                              title: const Text(AppStrings.success, style: TextStyle(color: Colors.white)),
+                                              content: const Text(AppStrings.assetAddedSuccess, style: TextStyle(color: Colors.white)),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _formKey.currentState!.reset();
+                                                    setState(() {
+                                                      selectedImagePath = null;
+                                                      selectedImageName = null;
+                                                      selectedCategory = null;
+                                                      showQR = false;
+                                                      imageValidationError = false;
+                                                      assetType = AppStrings.direct;
+                                                      qrIdController.clear();
+                                                      assetNameController.clear();
+                                                      summaryController.clear();
+                                                    });
+                                                  },
+                                                  child: Text('OK', style: TextStyle(color: AppColors.primaryAccent)),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
+                                          );
+                                        }
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Error saving asset: $e')),
+                                          );
+                                        }
+                                      }
                                     } else {
                                       setState(() {
                                         _autovalidateMode = AutovalidateMode.onUserInteraction;

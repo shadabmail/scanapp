@@ -9,6 +9,7 @@ import 'login_screen.dart';
 import 'scanner_screen.dart';
 import 'add_asset_screen.dart';
 import 'view_list_screen.dart';
+import 'document_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -89,7 +90,9 @@ class DashboardScreen extends StatelessWidget {
                         SizedBox(
                           width: Responsive.wp(context, 40),
                           height: Responsive.wp(context, 40),
-                          child: _Card(title: "Document", icon: Icons.description, onTap: () {}),
+                          child: _Card(title: "Document", icon: Icons.description, onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const DocumentScreen()));
+                          }),
                         ),
                       ],
                     ),
